@@ -267,3 +267,79 @@ public class Main {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+char x;
+
+				System.out.printf("%s %s %s\n", "Tarefa", "Data", "Feita");
+
+				for( int i=0; i<nTarefas; i++) {
+					//if (dia>=data[i][0] && mes>=data[i][1] && ano>=data[i][2] && temPrazo[i]) {
+						if(temPrazo[i]) {
+							if(ano>=data[i][2]) {
+							if(mes>=data[i][1]) {
+								if(dia>=data[i][0]) {
+									if(foiFeita[i]) {
+									x = 'X';
+								}else {
+									x= ' ';
+								}
+									System.out.printf("%d: %s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+								}else 
+									System.out.println("Não existe nenhuma tarefa até à data!");
+							}else
+								System.out.println("Não existe nenhuma tarefa até à data!");
+							}else
+								System.out.println("Não existe nenhuma tarefa até à data!");
+						}else
+							System.out.println("Não existe nenhuma tarefa até à data!");
+				}
+							
