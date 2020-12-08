@@ -314,32 +314,35 @@ public class Main {
 
 
 
+				System.out.printf("%s %s %s\n", "Tarefa", "Data", "Feita"); //
+				char x ='x';
+				for (int i=0; i<nTarefas; i++) {
+					if(data[i][0]<=dia && data[i][1]<=mes && data[i][2]<=ano && temPrazo[i] && foiFeita[i]) {
+							System.out.printf("\n %d: %s %d/%d/%d %c", i+1, tarefa[i], data[i][0], data[i][1], data[i][2], x); //x nao esta a funcionar
+						}else if(data[i][0]<=dia && data[i][1]<=mes && data[i][2]<=ano && temPrazo[i] && foiFeita[i]==false) {
+							System.out.printf("\n %d: %s %d/%d/%d", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+						}else {
+							System.out.printf("\nNão há tarefas para fazer até a essa data!");    //se o numero for menor que 13 ou 14 nao funciona
+						}
+				
+				}
 
+				}
 
-
-char x;
-
-				System.out.printf("%s %s %s\n", "Tarefa", "Data", "Feita");
-
-				for( int i=0; i<nTarefas; i++) {
-					//if (dia>=data[i][0] && mes>=data[i][1] && ano>=data[i][2] && temPrazo[i]) {
-						if(temPrazo[i]) {
-							if(ano>=data[i][2]) {
-							if(mes>=data[i][1]) {
-								if(dia>=data[i][0]) {
-									if(foiFeita[i]) {
-									x = 'X';
-								}else {
-									x= ' ';
-								}
-									System.out.printf("%d: %s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
-								}else 
-									System.out.println("Não existe nenhuma tarefa até à data!");
-							}else
-								System.out.println("Não existe nenhuma tarefa até à data!");
-							}else
-								System.out.println("Não existe nenhuma tarefa até à data!");
-						}else
-							System.out.println("Não existe nenhuma tarefa até à data!");
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 				}
 							
