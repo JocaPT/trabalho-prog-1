@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		// Nome: João Silva, Nº: 20201634, Turma 3
 		// Nome: Miguel Gonçalves, Nº 20201167, Turma 3
-		
+				
 		// Criação e inicialização das váriaveis
 		Scanner scanner = new Scanner(System.in);
 		
@@ -29,15 +29,13 @@ public class Main {
 		
 		nTarefas = 5;
 		
-		
-		//
-		
-		boolean sair = false;
+		boolean sairPrograma = false;
 		
 		do {
+			// Menu Principal
 			String funcionalidade = "";
-			
 			boolean funcionalidadeValida = false;
+			boolean sairFuncionalidade = false;
 			
 			do {
 				System.out.println("\n#-#-# Menu Principal #-#-#");
@@ -54,142 +52,316 @@ public class Main {
 				} else {
 					System.out.println("\nIntroduza um funcionalidade válida.");
 				}
-				
 			} while(funcionalidadeValida == false);
 			
-			funcionalidade.toLowerCase();
-			
 			switch (funcionalidade) {
-				case "v":
-					
-					String visualizacao = "";
-					
-					boolean visualizacaoValida = false;
+				// Menu de Visualização
+				case "v": case "V":
 					
 					do {
-						System.out.println("#-#-# Visualizar #-#-#");
-						System.out.println("Visualizar (t)odas");
-						System.out.println("Visualizar (d)ia d");
-						System.out.println("Visualizar (a)té dia d");
-						System.out.println("Visualizar (p)or fazer");
-						System.out.println("Visualizar (f)eitas");
-						System.out.println("Visualizar por pa(l)avra p");
-						System.out.println("(V)oltar");
+						String visualizacao = "";
+						boolean visualizacaoValida = false;
 						
-						System.out.println("\nIntroduza a visualização que pretende efetuar: ");
-						visualizacao = scanner.next();
-						
-						if(visualizacao.equalsIgnoreCase("t") || visualizacao.equalsIgnoreCase("d") || visualizacao.equalsIgnoreCase("a") || visualizacao.equalsIgnoreCase("p") || visualizacao.equalsIgnoreCase("f") || visualizacao.equalsIgnoreCase("l") || visualizacao.equalsIgnoreCase("v")) {
-							visualizacaoValida = true;
-						} else {
-							System.out.println("\nIntroduza um visualização válida.");
-						}
-						
-					} while(visualizacaoValida == false);
-					
-					visualizacao.toLowerCase();
-					
-					switch (visualizacao) {
-						case "t":
-							System.out.printf("%11s %s %s\n", "Tarefa", "Data", "Feita");
+						do {
+							System.out.println("#-#-# Visualizar #-#-#");
+							System.out.println("Visualizar (t)odas");
+							System.out.println("Visualizar (d)ia d");
+							System.out.println("Visualizar (a)té dia d");
+							System.out.println("Visualizar (p)or fazer");
+							System.out.println("Visualizar (f)eitas");
+							System.out.println("Visualizar por pa(l)avra p");
+							System.out.println("(V)oltar");
 							
-							int tempData[] = new int[3];
-							char x = ' ';
+							System.out.println("\nIntroduza a visualização que pretende efetuar: ");
+							visualizacao = scanner.next();
 							
-							for(int i = 0; i < nTarefas; i++) {
-								if(temPrazo[i]) {
-									tempData[0] = data[i][0];
-									tempData[1] = data[i][1];
-									tempData[2] = data[i][2];
-								} else {
-									tempData[0] = 0;
-									tempData[1] = 0;
-									tempData[2] = 0;
-								}
-								
-								if(foiFeita[i]) {
-									x = 'X';
-								} else {
-									x = ' ';
-								}
-								
-								System.out.printf("%d: %17s %d/%d/%d %c\n", i+1, tarefa[i], tempData[0], tempData[1], tempData[2], x);
-								
+							if(visualizacao.equalsIgnoreCase("t") || visualizacao.equalsIgnoreCase("d") || visualizacao.equalsIgnoreCase("a") || visualizacao.equalsIgnoreCase("p") || visualizacao.equalsIgnoreCase("f") || visualizacao.equalsIgnoreCase("l") || visualizacao.equalsIgnoreCase("v")) {
+								visualizacaoValida = true;
+							} else {
+								System.out.println("\nIntroduza um visualização válida.");
 							}
 							
-						break;
+						} while(visualizacaoValida == false);
 						
-						case "d":
-							int dia = 0, mes = 0, ano = 0;
-							
-							boolean diaValido = false;
-							boolean mesValido = false;
-							boolean anoValido = false;
-							
-							do {
-								System.out.println("\nIntroduza o dia: ");
-								dia = scanner.nextInt();
+						String dataApresentar = "";
+						String palavraProcurar = "";
+						char feitoX = ' ';
+						int dataIntroduzida[] = new int[3];
+						boolean diaValido = false;
+						boolean mesValido = false;
+						boolean anoValido = false;
+						boolean foiEncontrado = false;
+						
+						switch (visualizacao) {
+							case "t": case "T":
+								System.out.printf("%9s %22s %12s\n", "Tarefa", "Data", "Feita");
 								
-								if(dia > 1 || dia < 31) {
-									diaValido = true;
-								} else {
-									System.out.println("\nIntroduza um dia valido.");
-								}
-							} while(diaValido == false);
-							
-							do {
-								System.out.println("\nIntroduza o mês: ");
-								mes = scanner.nextInt();
-								
-								if(dia > 1 || dia < 12) {
-									mesValido = true;
-								} else {
-									System.out.println("\nIntroduza um mês valido.");
-								}
-							} while(mesValido == false);
-							
-							do {
-								System.out.println("\nIntroduza o ano: ");
-								ano = scanner.nextInt();
-								
-								if(ano > 1) {
-									anoValido = true;
-								} else {
-									System.out.println("\nIntroduza um ano valido.");
-								}
-							} while(anoValido == false);
-							
-							for(int i = 0; i < nTarefas; i++) {
-								if(data[i][0] == dia && data[i][1] == mes && data[i][2] == ano) {
-									if(foiFeita[i]) {
-										x = 'X';
+								for(int i = 0; i < nTarefas; i++) {
+									if(temPrazo[i]) {
+										dataApresentar = data[i][0] + "/" + data[i][1] + "/" + data[i][2];
 									} else {
-										x = ' ';
+										dataApresentar = "          ";
 									}
 									
-									System.out.printf("%s %s %s\n", "Tarefa", "Data", "Feita");
-									System.out.printf("%d: %s %d/%d/%d %c\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2], x);
-									break;
-								} else {
+									if(foiFeita[i]) {
+										feitoX = 'X';
+									} else {
+										feitoX = ' ';
+									}
+									
+									System.out.printf("%d: %-24s %-11s %c\n", i+1, tarefa[i], dataApresentar, feitoX);
+								}
+							break;
+								
+							case "d": case "D":
+								do {
+									System.out.println("\nIntroduza o dia: ");
+									dataIntroduzida[0] = scanner.nextInt();
+									
+									if(dataIntroduzida[0] >= 1 && dataIntroduzida[0] <= 31) {
+										diaValido = true;
+									} else {
+										System.out.println("\nIntroduza um dia válido.");
+									}
+								} while(diaValido == false);
+								
+								do {
+									System.out.println("\nIntroduza o mês: ");
+									dataIntroduzida[1] = scanner.nextInt();
+									
+									if(dataIntroduzida[1] >= 1 && dataIntroduzida[1] <= 12) {
+										mesValido = true;
+									} else {
+										System.out.println("\nIntroduza um mês válido.");
+									}
+								} while(mesValido == false);
+								
+								do {
+									System.out.println("\nIntroduza o ano: ");
+									dataIntroduzida[2] = scanner.nextInt();
+									
+									if(dataIntroduzida[2] >= 1) {
+										anoValido = true;
+									} else {
+										System.out.println("\nIntroduza um ano válido.");
+									}
+								} while(anoValido == false);
+								
+								System.out.printf("%9s %22s\n", "Tarefa", "Data");
+								for(int i = 0; i < nTarefas; i++) {
+									if(dataIntroduzida[0] == data[i][0] && dataIntroduzida[1] == data[i][1] && dataIntroduzida[2] == data[i][2] && !foiFeita[i]) {
+										
+										foiEncontrado = true;
+										
+										System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+									}
+								}
+								
+								if(!foiEncontrado) {
 									System.out.println("Não existe nenhuma tarefa a realizar nesse dia.");
 								}
-							}
-						break;
-					}
-					
+							break;
+							
+							case "a": case "A":
+								do {
+									System.out.println("\nIntroduza o dia: ");
+									dataIntroduzida[0] = scanner.nextInt();
+									
+									if(dataIntroduzida[0] >= 1 && dataIntroduzida[0] <= 31) {
+										diaValido = true;
+									} else {
+										System.out.println("\nIntroduza um dia válido.");
+									}
+								} while(diaValido == false);
+								
+								do {
+									System.out.println("\nIntroduza o mês: ");
+									dataIntroduzida[1] = scanner.nextInt();
+									
+									if(dataIntroduzida[1] >= 1 && dataIntroduzida[1] <= 12) {
+										mesValido = true;
+									} else {
+										System.out.println("\nIntroduza um mês válido.");
+									}
+								} while(mesValido == false);
+								
+								do {
+									System.out.println("\nIntroduza o ano: ");
+									dataIntroduzida[2] = scanner.nextInt();
+									
+									if(dataIntroduzida[2] >= 1) {
+										anoValido = true;
+									} else {
+										System.out.println("\nIntroduza um ano válido.");
+									}
+								} while(anoValido == false);
+								
+								System.out.printf("%9s %22s\n", "Tarefa", "Data");
+								for(int i = 0; i < nTarefas; i++) {
+									if(dataIntroduzida[2] <= data[i][2] && dataIntroduzida[1] <= data[i][1] && dataIntroduzida[0] <= data[i][0] && !foiFeita[i]) {
+										
+										foiEncontrado = true;
+										
+										System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+									}
+								}
+								
+								if(!foiEncontrado) {
+									System.out.println("Não existe nenhuma tarefa a realizar até esse dia.");
+								}
+							break;
+							
+							case "p": case "P":
+								System.out.printf("%9s %22s\n", "Tarefa", "Data");
+								
+								for(int i = 0; i < nTarefas; i++) {
+									if(!foiFeita[i]) {
+										foiEncontrado = true;
+										System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+									}
+								}
+								
+								if(!foiEncontrado) {
+									System.out.println("Não existe nenhuma tarefa por fazer.");
+								}
+							break;
+							
+							case "f": case "F":
+								System.out.printf("%9s %22s\n", "Tarefa", "Data");
+								
+								for(int i = 0; i < nTarefas; i++) {
+									if(foiFeita[i]) {
+										if(temPrazo[i]) {
+											dataApresentar = data[i][0] + "/" + data[i][1] + "/" + data[i][2];
+										} else {
+											dataApresentar = "          ";
+										}
+										
+										foiEncontrado = true;
+										
+										System.out.printf("%d: %-24s %s\n", i+1, tarefa[i], dataApresentar);
+									}
+								}
+								
+								if(!foiEncontrado) {
+									System.out.println("Não existe nenhuma tarefa feita.");
+								}
+							break;
+							
+							case "l": case "L":
+								System.out.println("\nIntroduza a palavra a procurar: ");
+								palavraProcurar = scanner.next();
+								
+								System.out.printf("%9s %22s %12s\n", "Tarefa", "Data", "Feita");
+								for(int i = 0; i < nTarefas; i++) {
+									if(tarefa[i].indexOf(palavraProcurar) != -1) {
+										if(temPrazo[i]) {
+											dataApresentar = data[i][0] + "/" + data[i][1] + "/" + data[i][2];
+										} else {
+											dataApresentar = "          ";
+										}
+										
+										if(foiFeita[i]) {
+											feitoX = 'X';
+										} else {
+											feitoX = ' ';
+										}
+										
+										foiEncontrado = true;
+										
+										System.out.printf("%d: %-24s %-11s %c\n", i+1, tarefa[i], dataApresentar, feitoX);
+									}
+								}
+								
+								if(!foiEncontrado) {
+									System.out.println("Não existe nenhuma tarefa que contenha essa palavra.");
+								}
+							break;
+							
+							case "v": case "V":
+								sairFuncionalidade = true;
+							break;
+						}
+					} while(sairFuncionalidade == false);
 				break;
-				case "s":
-					sair = true;
-					break;
-					
-				default:
-					System.out.println("default");
+				
+				case "m": case "M":
+					do {
+						String marcacao = "";
+						boolean marcacaoValida = false;
+						
+						do {
+							System.out.println("#-#-# Marcação #-#-#");
+							System.out.println("Marcar como (f)eita por número");
+							System.out.println("Marcar como feita por (t)exto");
+							System.out.println("(D)esmarcar última feita");
+							System.out.println("Marcar todas (n)o dia d");
+							System.out.println("(V)oltar");
+							
+							System.out.println("\nIntroduza a visualização que pretende efetuar: ");
+							marcacao = scanner.next();
+							
+							if(marcacao.equalsIgnoreCase("f") || marcacao.equalsIgnoreCase("t") || marcacao.equalsIgnoreCase("d") || marcacao.equalsIgnoreCase("n") || marcacao.equalsIgnoreCase("v")) {
+								marcacaoValida = true;
+							} else {
+								System.out.println("\nIntroduza um visualização válida.");
+							}
+							
+						} while(marcacaoValida == false);
+						
+						boolean foiEncontrado = false;
+						
+						switch (marcacao) {
+							case "f": case "F":
+								int numero = 0;
+								boolean numeroValido = false;
+								
+								do {
+									System.out.println("\nIntroduza o número da tarefa: ");
+									numero = scanner.nextInt();
+									numero -= 1;
+									
+									if(numero >= 0 && numero <= nTarefas) {
+										numeroValido = true;
+									} else {
+										System.out.println("\nNão existe nenhuma tarefa com este número.");
+									}
+								} while(numeroValido == false);
+								
+								foiFeita[numero] = true;
+								System.out.printf("A tarefa com número %d foi marcada como feita.", numero);
+							break;
+							
+							case "t": case "T":
+								String texto = "";
+								
+								System.out.println("\nIntroduza a palavra: ");
+								texto = scanner.next();
+								
+								for(int i = 0; i < nTarefas; i++) {
+									if(tarefa[i].indexOf(texto) != -1) {
+										
+										foiFeita[i] = true;
+										foiEncontrado = true;
+										System.out.printf("A tarefa com o texto %s foi marcada como feita.", texto);
+									}
+								}
+								
+								if(!foiEncontrado) {
+									System.out.println("Não existe nenhuma tarefa que contenha essa palavra.");
+								}
+							break;
+						
+						
+							case "v": case "V":
+								sairFuncionalidade = true;
+							break;
+						}
+						
+						
+					} while(sairFuncionalidade == false);
+				break;
 			}
-			
-			funcionalidade = "";
-			
-		} while(sair == false);
-		
+		} while(sairPrograma == false);
 	}
-
 }
