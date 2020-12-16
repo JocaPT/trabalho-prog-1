@@ -658,3 +658,214 @@ public class Main {
 		}while(sair == false);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			case "E":
+			case "e":
+
+
+
+				do {
+					String editar = "";
+					boolean editarValido = false;
+					do {
+						System.out.println("#-#-# Editar #-#-#");
+						System.out.println("(A)dicionar tarefa");
+						System.out.println("Adicionar (t)arefa na posição n");
+						System.out.println("Apagar tarefa na (p)osição n");
+						System.out.println("Apagar (f)eitas");
+						System.out.println("(E)ditar tarefa");
+						System.out.println("(V)oltar");
+
+						System.out.println("\nIntroduza a visualização que pretende efetuar: ");
+						editar = scanner.next();
+
+						if(editar.equalsIgnoreCase("a") || editar.equalsIgnoreCase("t") || editar.equalsIgnoreCase("p") || editar.equalsIgnoreCase("f") || editar.equalsIgnoreCase("e") || editar.equalsIgnoreCase("V")) {
+							editarValido = true;
+						}else {
+							System.out.println("Introduziu um editar inválido!");
+						}	
+					}while(editarValido==false);
+
+
+					switch (editar) {
+					case "p":
+					case "P":
+						boolean tarefaValida= false;
+						int apagarTarefaN;
+						do { 
+							System.out.println("Introduza a tarefa que quer apagar:");
+							apagarTarefaN = scanner.nextInt();
+							apagarTarefaN -=1;
+							if(apagarTarefaN>=0 && apagarTarefaN<=nTarefas) {
+								tarefaValida=true;
+							}else {
+								System.out.println("Introduza uma tarefa válida!");
+							}
+						}while(tarefaValida=false);
+
+						System.out.printf("%9s %22s\n", "Tarefa", "Data");
+
+						for(int i=0; i<nTarefas; i++) {
+							if(apagarTarefaN==i) {
+								System.out.print("");
+							}else {
+								System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+							}
+						}
+						System.out.println();
+						break;
+
+					case "f":
+					case "F":
+						System.out.printf("%9s %22s\n", "Tarefa", "Data");
+
+						for(int i=0; i<nTarefas;i++) {
+							if(foiFeita[i]==true) {
+								System.out.print("");        //nao sei se é preciso ficar no tarefa[i] todo seguido pq salta do 1 ao 3
+							}else {
+								System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+
+							}
+						}
+
+						System.out.println();
+						break;
+					case "e":
+					case "E":
+						String editarTarefa= "";
+						do {
+							System.out.println("#-#-# Editar-Submenu #-#-#");
+							System.out.println("(E)ditar texto");
+							System.out.println("(R)emover/adicionar data");
+							System.out.println("(V)oltar");
+
+							System.out.println("\nIntroduza o que pretende efetuar: ");
+							editarTarefa = scanner.next();
+
+							if(editarTarefa.equalsIgnoreCase("e") || editarTarefa.equalsIgnoreCase("r") || editarTarefa.equalsIgnoreCase("v")) {
+								editarValido = true;
+							}else {
+								System.out.println("Introduziu um editar inválido!");
+							}	
+						}while(editarValido==false);
+
+						switch(editarTarefa) {
+
+
+
+						case "e":
+						case "E":
+							boolean editarTarefaNValida=false;
+							System.out.println("Selecione a tarefa que pretende editar:");
+							int editarTarefaN;
+							editarTarefaN = scanner.nextInt();
+							editarTarefaN -=1;
+							do {
+								if(editarTarefaN>=0 && editarTarefaN <= nTarefas) {
+									editarTarefaNValida=true;
+								}else {
+									System.out.println("Introduza uma variável válida!");
+									System.out.println();
+								}
+
+							}while(editarTarefaNValida=false);
+
+							System.out.printf("%9s %22s\n", "Tarefa", "Data");
+
+							for(int i=0; i<nTarefas; i++) {
+								if(editarTarefaN==i) {
+									System.out.println("Introduza uma nova tarefa:");
+									tarefa[i]=scanner.next();  //falta o split 
+									System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+								}else {
+									System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+								}
+							}
+							System.out.println();
+							break;
+
+						case "r":
+						case "R":
+
+							boolean removerOuAdicionarData=false;
+							System.out.println("Selecione a tarefa que pretende editar:");
+							int removerOuAdicionarDataN;
+							removerOuAdicionarDataN = scanner.nextInt();
+							removerOuAdicionarDataN -=1;
+							do {
+								if(removerOuAdicionarDataN>=0 && removerOuAdicionarDataN <= nTarefas) {
+									removerOuAdicionarData=true;
+								}else {
+									System.out.println("Introduza uma variável válida!");
+									System.out.println();
+								}
+
+							}while(removerOuAdicionarData=false);
+
+							System.out.printf("%9s %22s\n", "Tarefa", "Data");
+
+							for(int i=0; i<nTarefas; i++) {
+								if(removerOuAdicionarDataN==i && temPrazo[i]==true) {
+									temPrazo[i]=false;
+									System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i]);
+								}else if (removerOuAdicionarDataN==i && temPrazo[i]==false) {
+									temPrazo[i]=true;
+									System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]);
+								}else {
+									System.out.printf("%d: %-24s %d/%d/%d\n", i+1, tarefa[i], data[i][0], data[i][1], data[i][2]); //??
+								}
+							}
+							System.out.println();
+							break;
+						case "v":
+						case "V":
+
+							sairFuncionalidade=true;
+							break;
+
+						}while (sairFuncionalidade==false);
+
+					case "v":
+					case "V":
+						sairFuncionalidade=true;
+						break;
+					}
+				}while(sairFuncionalidade==false);
+
+			}
+		} while(sairPrograma == false);
+	}
+}
