@@ -845,5 +845,8 @@ public class Main {
 				break;
 			}
 		} while(!sairMenuPrincipal);
+		
+		scanner.close();
+		scannerStrings.close();
 	}
 }
