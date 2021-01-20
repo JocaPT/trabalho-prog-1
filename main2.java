@@ -14,8 +14,8 @@ public class main {
 		System.out.println(msg);
 		return scannerStrings.next();
 	}
-	
-	
+
+
 	public static int leituraDadosInt(Scanner scanner, String msg) {
 		System.out.println(msg);
 		return scanner.nextInt();
@@ -71,7 +71,7 @@ public class main {
 		}
 	}
 
-	public static void menuVisualizar(Scanner scanner, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[]) {
+	public static void menuVisualizar(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[]) {
 		do {
 			do {
 				System.out.println("\n#-#-# Visualizar #-#-#");
@@ -103,18 +103,22 @@ public class main {
 
 				case "p": case "P":
 					subMenuValido = true;
+					visualizarPorFazer(scanner, dataIntroduzida, tarefa, temPrazo, foiFeita, data, nTarefas);
 					break;
 
 				case "f": case "F":
 					subMenuValido = true;
+					visualizarFeitas(tarefa, temPrazo, foiFeita, data, nTarefas);
 					break;
 
 				case "l": case "L":
 					subMenuValido = true;
+					visualizarPorPalavra(scanner, scannerStrings, nTarefas, tarefa, temPrazo, foiFeita, data);
 					break;
 
 				case "v": case "V":
 					subMenuValido = true;
+					sairSubMenu=true;
 					break;
 
 				default:
@@ -192,27 +196,6 @@ public class main {
 		}
 	}
 
-	public static void visualizarPorFazer(String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, boolean foiEncontrado,String dataApresentar) {
-
-		System.out.printf("%9s %22s\n", "Tarefa", "Data");
-
-		for(int i = 0; i < nTarefas; i++) {
-			if(!foiFeita[i]) {
-				if(temPrazo[i]) {
-					dataApresentar = data[i][0] + "/" + data[i][1] + "/" + data[i][2];
-				} else {
-					dataApresentar = "          ";
-				}                                                                           //DOIS METODOS IGUAIS???
-
-				foiEncontrado = true;
-				System.out.printf("%d: %-24s %s\n", i+1, tarefa[i], dataApresentar);
-			}
-		}
-
-		if(!foiEncontrado) {
-			System.out.println("Não existe nenhuma tarefa por fazer.");
-		}
-	}
 
 	public static void visualizarPorFazer(Scanner scanner, int dataIntroduzida[] ,String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas) {
 		boolean foiEncontrado = false;
@@ -229,20 +212,14 @@ public class main {
 		}
 	}
 
-	public static void visualizarFeitas(String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, boolean foiEncontrado,String dataApresentar) {
+	public static void visualizarFeitas(String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas) {
 		System.out.printf("%9s %22s\n", "Tarefa", "Data");
-
+		boolean foiEncontrado=false;
 		for(int i = 0; i < nTarefas; i++) {
 			if(foiFeita[i]) {
-				if(temPrazo[i]) {
-					dataApresentar = data[i][0] + "/" + data[i][1] + "/" + data[i][2];
-				} else {
-					dataApresentar = "          ";                                                //variaveis verificar
-				}
-
 				foiEncontrado = true;
 
-				System.out.printf("%d: %-24s %s\n", i+1, tarefa[i], dataApresentar);
+				System.out.printf("%d: %-24s %s\n", i+1, tarefa[i], verificarTemPrazo(temPrazo, data, i));
 			}
 		}
 
@@ -260,27 +237,15 @@ public class main {
 
 
 
-	public static void visualizarPorPalavra(Scanner scanner,Scanner scannerStrings, int nTarefas, String tarefa[], String palavraProcurar, boolean temPrazo[], boolean foiFeita[], int data[][], String dataApresentar, boolean foiEncontrado, char feitoX ) {
-		leituraDePalavra(scannerStrings);
-
+	public static void visualizarPorPalavra(Scanner scanner,Scanner scannerStrings, int nTarefas, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][]) {
+		String palavra = leituraDePalavra(scannerStrings);
+		boolean foiEncontrado=false;
 		System.out.printf("%9s %22s %12s\n", "Tarefa", "Data", "Feita");
 		for(int i = 0; i < nTarefas; i++) {
-			if(tarefa[i].indexOf(palavraProcurar) != -1) {
-				if(temPrazo[i]) {
-					dataApresentar = data[i][0] + "/" + data[i][1] + "/" + data[i][2];
-				} else {
-					dataApresentar = "          ";
-				}
-
-				if(foiFeita[i]) {
-					feitoX = 'X';
-				} else {
-					feitoX = ' ';
-				}
-
+			if(tarefa[i].indexOf(palavra) != -1) {
 				foiEncontrado = true;
 
-				System.out.printf("%d: %-24s %-11s %c\n", i+1, tarefa[i], dataApresentar, feitoX);
+				System.out.printf("%d: %-24s %-11s %c\n", i+1, tarefa[i], verificarTemPrazo(temPrazo, data, i), verificarFoiFeita(foiFeita, i));
 			}
 		}
 
@@ -290,19 +255,15 @@ public class main {
 
 	}
 
-	public static void voltar(boolean sairSubMenu) {
-		sairSubMenu = true;
-	}
-
-	public static void verificacaoDeTarefaN(int numeroTarefa, int nTarefas, boolean numeroTarefaValido) {
+	public static boolean verificacaoDeTarefaN(int numeroTarefa, int nTarefas) {
 		if(numeroTarefa >= 0 && numeroTarefa <= nTarefas) {
-			numeroTarefaValido = true;
+			return true;
 		} else {
-			System.out.println("\nNão existe nenhuma tarefa com este número.");
+			return false;
 		}
 	}
 
-	public static void menuMarcacao(Scanner scanner, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[]) {
+	public static void menuMarcacao(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[], boolean numeroTarefaValido,int ultimoEditado, int numeroTarefa, boolean foiEncontrado) {
 		do {
 			do {
 				System.out.println("\n#-#-# Marcação #-#-#");
@@ -312,17 +273,17 @@ public class main {
 				System.out.println("Marcar todas (n)o dia d");
 				System.out.println("(V)oltar");
 
-				opcaoSubMenu = leituraDadosString(scanner,"Introduza uma letra:");  //ver isto
+				opcaoSubMenu = leituraDadosString(scanner,"Introduza uma letra:");  
 
 				switch (opcaoSubMenu) {
 				case "f": case "F":
 					subMenuValido = true;
-
+					marcarComoFeitaPorNumero(scanner,numeroTarefa, nTarefas, numeroTarefaValido, foiFeita, ultimoEditado);
 					break;
 
 				case "t": case "T":
 					subMenuValido = true;
-					//faltam alterar os menus
+					marcarComoFeitaPorTexto(scannerStrings, nTarefas, foiFeita, ultimoEditado, foiEncontrado, tarefa);
 					break;
 
 				case "d": case "D":
@@ -336,6 +297,7 @@ public class main {
 
 				case "v": case "V":
 					subMenuValido = true;
+					sairSubMenu=true;
 					break;
 
 				default:
@@ -353,16 +315,19 @@ public class main {
 			leituraDadosInt(scanner, "\nIntroduza o número da tarefa: ");
 			numeroTarefa -= 1;
 
-			verificacaoDeTarefaN(numeroTarefa, nTarefas, numeroTarefaValido);
+			if (verificacaoDeTarefaN(numeroTarefa, nTarefas))
+				numeroTarefaValido= true;
+			else
+				System.out.println("\nNão existe nenhuma tarefa com este número.");
 
-		} while(!numeroTarefaValido);                                                                        //ver variaveis
+		} while(!numeroTarefaValido);                                                                        
 
 		foiFeita[numeroTarefa] = true;
 		ultimoEditado = numeroTarefa;
 		System.out.printf("A tarefa com número %d foi marcada como feita.", numeroTarefa + 1);
 	}
 
-	public static void marcarComoFeitaPorTexto(Scanner scannerStrings, int nTarefas, boolean foiFeita[], int ultimoEditado, boolean foiEncontrado) {
+	public static void marcarComoFeitaPorTexto(Scanner scannerStrings, int nTarefas, boolean foiFeita[], int ultimoEditado, boolean foiEncontrado, String tarefa[]) {
 
 		String texto = "";
 
@@ -382,6 +347,166 @@ public class main {
 			System.out.println("Não existe nenhuma tarefa que contenha essa palavra.");
 		}
 	}
+
+	public static void desmarcarUltimaFeita(Scanner scannerStrings, int nTarefas, boolean foiFeita[], int ultimoEditado, boolean foiEncontrado, String tarefa[]) {
+		if(ultimoEditado != -1) {
+			foiFeita[ultimoEditado] = false;
+			System.out.printf("A tarefa com número %d foi marcada como por fazer.", ultimoEditado + 1);
+		} else {
+			System.out.println("Ainda não modificou nenhuma tarefa.");
+		}
+	}
+
+	public static void marcarTodasNoDiaN(Scanner scanner, Scanner scannerStrings, int nTarefas, boolean foiFeita[], int ultimoEditado, boolean foiEncontrado, String tarefa[], int dataIntroduzida[], int data[][]) {
+		do  {
+			dataIntroduzida[0] = leituraDadosInt(scanner, "Introduza o dia: ");
+		} while(verificarDados(dataIntroduzida, 0, 1, 31));
+
+		do  {
+			dataIntroduzida[1] = leituraDadosInt(scanner, "Introduza o mês: ");
+		} while(verificarDados(dataIntroduzida, 1, 1, 12));
+
+		do  {
+			dataIntroduzida[2] = leituraDadosInt(scanner, "Introduza o ano: ");
+		} while(verificarDados(dataIntroduzida, 2, 1));
+
+		for(int i = 0; i < nTarefas; i++) {
+			if(dataIntroduzida[0] == data[i][0] && dataIntroduzida[1] == data[i][1] && dataIntroduzida[2] == data[i][2] && !foiFeita[i]) {
+
+				foiEncontrado = true;
+				foiFeita[i] = true;
+
+				System.out.printf("\nA tarefa com número %d foi marcada como feita.", i + 1);
+			}
+		}
+
+		if(!foiEncontrado) {
+			System.out.println("\nNão existe nenhuma tarefa a realizar até esse dia.");
+		}
+
+	}
+
+	public static void menuEditar(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[], boolean numeroTarefaValido,int ultimoEditado, int numeroTarefa, boolean foiEncontrado) {
+		do {
+			do {
+				System.out.println("\n#-#-# Editar #-#-#");
+				System.out.println("(A)dicionar tarefa");
+				System.out.println("Adicionar (t)arefa na posição n");
+				System.out.println("Apagar tarefa na (p)osição n");
+				System.out.println("Apagar (f)eitas");
+				System.out.println("(E)ditar tarefa");
+				System.out.println("(V)oltar");
+
+				opcaoSubMenu = leituraDadosString(scanner,"Introduza uma letra:");  
+
+				switch (opcaoSubMenu) {
+				case "a": case "A":
+					subMenuValido = true;
+					break;
+
+				case "t": case "T":
+					subMenuValido = true;
+
+					break;
+
+				case "n": case "N":
+					subMenuValido = true;
+
+					break;
+
+				case "p": case "P":
+					subMenuValido = true;
+					break;
+
+				case "f": case "F":
+					subMenuValido = true;
+					break;
+
+				case "e": case "E":
+					subMenuValido = true;
+					break;
+
+				case "v": case "V":
+					subMenuValido = true;
+					sairSubMenu=true;
+					break;
+
+				default:
+					System.out.println("\nIntroduza um funcionalidade válida.");
+					subMenuValido = false;
+					break;
+				}
+			} while(!subMenuValido);
+		} while(!sairSubMenu);
+	}
+
+	public static boolean adicionarTarefa(int numeroTarefa, int nTarefas) {
+
+		if(nTarefas - 1 >= tamMax) {
+			System.out.printf("\nJá existe o número máximo de tarefas, o máximo é %d.", tamMax);
+			break;
+		}
+
+		System.out.println("\nIntroduza a descrição da tarefa: ");
+		tarefa[nTarefas] = scannerStrings.nextLine();
+
+		do {
+			System.out.println("\nA tarefa está feita? (S / N)");
+			booleanoIntroduzido = scanner.next();
+
+			if(booleanoIntroduzido.equalsIgnoreCase("s")) {
+				foiFeita[nTarefas] = true;
+				booleanValido = true;
+			} else if(booleanoIntroduzido.equalsIgnoreCase("n")) {
+				foiFeita[nTarefas] = false;
+				booleanValido = true;
+			} else {
+				System.out.println("\nIntroduza uma opção valida.");
+			}
+		} while(!booleanValido);
+		booleanValido = false;
+
+		do {
+			System.out.println("\nA tarefa tem prazo? (S / N)");
+			booleanoIntroduzido = scanner.next();
+
+			if(booleanoIntroduzido.equalsIgnoreCase("s")) {
+				temPrazo[nTarefas] = true;
+				booleanValido = true;
+			} else if(booleanoIntroduzido.equalsIgnoreCase("n")) {
+				temPrazo[nTarefas] = false;
+				booleanValido = true;
+			} else {
+				System.out.println("\nIntroduza uma opção valida.");
+			}
+		} while(!booleanValido);
+		booleanValido = false;
+
+		if(temPrazo[nTarefas]) {
+			do  {
+				dataIntroduzida[0] = leituraDadosInt(scanner, "Introduza o dia: ");
+			} while(verificarDados(dataIntroduzida, 0, 1, 31));
+
+			do  {
+				dataIntroduzida[1] = leituraDadosInt(scanner, "Introduza o mês: ");
+			} while(verificarDados(dataIntroduzida, 1, 1, 12));
+
+			do  {
+				dataIntroduzida[2] = leituraDadosInt(scanner, "Introduza o ano: ");
+			} while(verificarDados(dataIntroduzida, 2, 1));
+
+			data[nTarefas][0] = dataIntroduzida[0];
+			data[nTarefas][1] = dataIntroduzida[1];
+			data[nTarefas][2] = dataIntroduzida[2];
+		}
+
+		nTarefas += 1;
+
+		System.out.println("\nA tarefa foi criada com sucesso.");	
+
+	}
+
+
 
 
 
@@ -456,7 +581,7 @@ public class main {
 
 				case "v": case "V":
 					menuPrincipalValido = true;
-					menuVisualizar(scanner, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa, temPrazo, foiFeita, data, nTarefas, dataIntroduzida);
+					menuVisualizar(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa, temPrazo, foiFeita, data, nTarefas, dataIntroduzida);
 					break;
 
 				case "m": case "M":
