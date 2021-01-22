@@ -1,33 +1,33 @@
-package trabalho_prático_3;
+package main;
 
 import java.util.Scanner;
 
-public class main {
+public class Main {
 
 	public static String leituraDadosString(Scanner scannerStrings, String msg) {
 		System.out.println(msg);
-		return scannerStrings.next();                                           //Criação de métodos
+		return scannerStrings.next();
 	}
 
-	public static int leituraDadosInt(Scanner scanner, String msg) {
-		System.out.println(msg);                                       
+	public static int leituraDadosInt(Scanner scanner, String msg) {                   //Criação de métodos
+		System.out.println(msg);
 		return scanner.nextInt();
 	}
 
-	public static boolean verificarDados(int dataIntroduzida[], int index, int n1, int n2) {
+	public static boolean verificarDados(int dataIntroduzida[], int index, int n1, int n2) {      //Proteção de dados para os dias, meses
 		if(dataIntroduzida[index] >= n1 && dataIntroduzida[index] <= n2) {
 			return false;
 		} else {
-			System.out.println("\nIntroduza um valor válido.");           //Proteção de dados para os dias, meses
+			System.out.println("\nIntroduza um valor válido.");
 			return true;
 		}
 	}
 
-	public static boolean verificarDados(int dataIntroduzida[], int index, int n1) {
+	public static boolean verificarDados(int dataIntroduzida[], int index, int n1) {         //Proteção de dados para os anos
 		if(dataIntroduzida[index] >= n1) {
-			return false;                                                         
+			return false;
 		} else {
-			System.out.println("\nIntroduza um valor válido.");             //Proteção de dados para os anos
+			System.out.println("\nIntroduza um valor válido.");
 			return true;
 		}
 	}
@@ -60,7 +60,7 @@ public class main {
 		if(dataIntroduzida[0] == data[i][0] && dataIntroduzida[1] == data[i][1] && dataIntroduzida[2] == data[i][2] && !foiFeita[i]) {
 			return true;
 		} else {
-			return false;             //bug
+			return false;
 		}
 	}
 
@@ -88,10 +88,43 @@ public class main {
 		}
 	}
 
+	public static boolean verificarIndex(int index, int nTarefas) {
+		if (index < nTarefas) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public static void avancarTarefas(String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int n1, int n2) {
+		for(int i = n1; i >= n2; i--) {
+			tarefa[i] = tarefa[i - 1];
+			temPrazo[i] = temPrazo[i - 1];
+			foiFeita[i] = foiFeita[i - 1];
+			data[i][0] = data[i - 1][0];
+			data[i][1] = data[i - 1][1];
+			data[i][2] = data[i - 1][2];
+		}
+	}
+
+	public static int recuarTarefas(String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int n1, int n2) {
+		for(int i = n1; i <= n2; i++) {
+			tarefa[i] = tarefa[i + 1];
+			temPrazo[i] = temPrazo[i + 1];
+			foiFeita[i] = foiFeita[i + 1];
+			data[i][0] = data[i + 1][0];
+			data[i][1] = data[i + 1][1];
+			data[i][2] = data[i + 1][2];
+			nTarefas += 1;
+		}
+
+		return nTarefas;
+	}
+
 	//Criação do menú que permite as gerir listas
 
-	public static int menuGerir(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, int listaAtiva, int nListas, String nomeListas[]) {
-		do {                             //Passagem das variáveis para dentro do metodo
+	public static int menuGerir(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, int listaAtiva, int nListas, int listaMax, String nomeListas[]) {
+		do { 						//Passagem das variáveis para dentro do metodo
 			do {
 				System.out.println("\n#-#-# Gerir listas #-#-#");
 				System.out.println("(S)elecionar lista ativa");
@@ -115,10 +148,12 @@ public class main {
 
 				case "c": case "C":
 					subMenuValido = true;
-					break;                          
+					nListas = criarLista(scannerStrings, nListas, listaMax, nomeListas);
+					break;
 
 				case "a": case "A":
 					subMenuValido = true;
+					nListas = apagarLista(scanner, nListas, listaMax, nomeListas);
 					break;
 
 				case "v": case "V":
@@ -141,22 +176,42 @@ public class main {
 	public static int listaAtiva(Scanner scanner, int listaAtiva, int nListas) {
 		listaAtiva = leituraDadosInt(scanner, "\nIntroduza o número da lista ativa: ");
 
-		if (listaAtiva >= nListas) {
+		if (listaAtiva > nListas) {
 			System.out.println("Está lista não é valída.");
 			listaAtiva = 0;
 		}
 
-		return listaAtiva;
+		return listaAtiva - 1;
 	}
 
 	public static void listarListas(int nListas, String nomeListas[]) {
 		for(int i = 0; i < nListas; i++) {
-			System.out.printf("%d | %s", i, nomeListas[i]);
+			System.out.printf("\n%d | %s", i + 1, nomeListas[i]);
 		}
 	}
 
-	public static int criarLista(Scanner scannerStrings, int nListas, String nomeListas[]) {
-		nomeListas[nListas - 1] = leituraDadosString(scannerStrings, "");
+	public static int criarLista(Scanner scannerStrings, int nListas, int listaMax, String nomeListas[]) {
+		if (nListas < listaMax) {
+			nomeListas[nListas] = leituraDadosString(scannerStrings, "Introduza a descrição da lista: ");
+
+			nListas += 1;
+		} else {
+			System.out.println("Não pode criar mais listas.");
+		}
+		return nListas;
+	}
+
+	public static int apagarLista(Scanner scanner, int nListas, int listaMax, String nomeListas[]) {
+		if (nListas != 0) {
+			int nLista = leituraDadosInt(scanner, "Introduza o número da lista: ");
+			if (nLista <= nListas) {
+				nomeListas[nLista - 1] = null;
+
+				nListas -= 1;
+			}
+		} else {
+			System.out.println("Não pode apagar a última lista.");
+		}
 
 		return nListas;
 	}
@@ -180,7 +235,7 @@ public class main {
 				switch (opcaoSubMenu) {
 				case "t": case "T":
 					subMenuValido = true;
-					visualizarTodas(tarefa, temPrazo, foiFeita, data, nTarefas);     //Chama o método
+					visualizarTodas(tarefa, temPrazo, foiFeita, data, nTarefas);
 					break;
 
 				case "d": case "D":
@@ -213,8 +268,8 @@ public class main {
 					sairSubMenu = true;
 					break;
 
-				default:                                                          //Devolve isto se não for escolhida nenhuma opção anterior 
-					System.out.println("\nIntroduza um funcionalidade válida.");
+				default:
+					System.out.println("\nIntroduza um funcionalidade válida.");			//Devolve isto se não for escolhida nenhuma das opções anteriores
 					subMenuValido = false;
 					break;
 				}
@@ -236,7 +291,7 @@ public class main {
 		} while(verificarDados(dataIntroduzida, 0, 1, 31));
 
 		do  {
-			dataIntroduzida[1] = leituraDadosInt(scanner, "Introduza o mês: ");     //Proteção de dados
+			dataIntroduzida[1] = leituraDadosInt(scanner, "Introduza o mês: ");
 		} while(verificarDados(dataIntroduzida, 1, 1, 12));
 
 		do  {
@@ -331,7 +386,7 @@ public class main {
 		}
 	}
 
-	//Criação do menú Marcação
+	//Criação do menú Marcação:
 
 	public static void menuMarcacao(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[], int ultimoEditado, int numeroTarefa, boolean numeroTarefaValido, boolean foiEncontrado) {
 		do {
@@ -348,7 +403,7 @@ public class main {
 				switch (opcaoSubMenu) {
 				case "f": case "F":
 					subMenuValido = true;
-					ultimoEditado = marcarFeitaNumero(scanner, numeroTarefa, nTarefas, numeroTarefaValido, ultimoEditado);
+					ultimoEditado = marcarFeitaNumero(scanner, foiFeita, numeroTarefa, nTarefas, numeroTarefaValido, ultimoEditado);
 					break;
 
 				case "t": case "T":
@@ -380,7 +435,7 @@ public class main {
 		} while(!sairSubMenu);
 	}
 
-	public static int marcarFeitaNumero(Scanner scanner, int numeroTarefa, int nTarefas, boolean numeroTarefaValido, int ultimoEditado) {
+	public static int marcarFeitaNumero(Scanner scanner, boolean foiFeita[], int numeroTarefa, int nTarefas, boolean numeroTarefaValido, int ultimoEditado) {
 		do {
 			numeroTarefa = leituraDadosInt(scanner, "\nIntroduza o número da tarefa: ") - 1;
 
@@ -392,6 +447,7 @@ public class main {
 		} while(!numeroTarefaValido);
 
 		ultimoEditado = numeroTarefa;
+		foiFeita[numeroTarefa] = true;
 		System.out.printf("A tarefa com número %d foi marcada como feita.", numeroTarefa + 1);
 		return ultimoEditado;
 	}
@@ -450,8 +506,10 @@ public class main {
 			System.out.println("\nNão existe nenhuma tarefa a realizar até esse dia.");
 		}
 	}
-	//Criação do menú Editar
-	public static void menuEditar(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[], int tamMax, String booleanoIntroduzido, boolean booleanValido, int numeroTarefa, boolean numeroTarefaValido) {
+
+	//Criação do menú Editar:
+
+	public static int menuEditar(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[], int tamMax, String booleanoIntroduzido, boolean booleanValido, int numeroTarefa, boolean numeroTarefaValido) {
 		do {
 			do {
 				System.out.println("\n#-#-# Editar #-#-#");
@@ -472,7 +530,7 @@ public class main {
 
 				case "t": case "T":
 					subMenuValido = true;
-					adicionarTarefaPosN(scanner, scannerStrings, dataIntroduzida, tarefa, temPrazo, foiFeita, data, nTarefas, tamMax, booleanoIntroduzido, booleanValido, numeroTarefa, numeroTarefaValido);
+					nTarefas = adicionarTarefaPosN(scanner, scannerStrings, dataIntroduzida, tarefa, temPrazo, foiFeita, data, nTarefas, tamMax, booleanoIntroduzido, booleanValido, numeroTarefa, numeroTarefaValido);
 					break;
 
 				case "p": case "P":
@@ -486,7 +544,8 @@ public class main {
 					break;
 
 				case "e": case "E":
-					subMenuValido = true;               //falta isto
+					subMenuValido = true;
+					menuEditarTarefa(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa, temPrazo, foiFeita, data, nTarefas, dataIntroduzida, tamMax, numeroTarefa, numeroTarefaValido);
 					break;
 
 				case "v": case "V":
@@ -501,6 +560,7 @@ public class main {
 				}
 			} while(!subMenuValido);
 		} while(!sairSubMenu);
+		return nTarefas;
 	}
 
 	public static int adicionarTarefa(Scanner scanner, Scanner scannerStrings, int dataIntroduzida[], String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int tamMax, String booleanoIntroduzido, boolean booleanValido) {
@@ -527,7 +587,7 @@ public class main {
 		booleanValido = false;
 
 		do {
-			booleanoIntroduzido = leituraDadosString(scanner, "\nA tarefa está feita? (S / N)");
+			booleanoIntroduzido = leituraDadosString(scanner, "\nA tarefa tem prazo? (S / N)");
 
 			if(verificarString(booleanoIntroduzido, "s")) {
 				temPrazo[nTarefas] = true;
@@ -564,10 +624,10 @@ public class main {
 		return nTarefas + 1;
 	}
 
-	public static void adicionarTarefaPosN(Scanner scanner, Scanner scannerStrings, int dataIntroduzida[], String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int tamMax, String booleanoIntroduzido, boolean booleanValido, int numeroTarefa, boolean numeroTarefaValido) {
+	public static int adicionarTarefaPosN(Scanner scanner, Scanner scannerStrings, int dataIntroduzida[], String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int tamMax, String booleanoIntroduzido, boolean booleanValido, int numeroTarefa, boolean numeroTarefaValido) {
 		if(nTarefas - 1 >= tamMax) {
 			System.out.printf("\nJá existe o número máximo de tarefas, o máximo é %d.", tamMax);
-			return;
+			return nTarefas;
 		}
 
 		do {
@@ -580,14 +640,9 @@ public class main {
 			}
 		} while(!numeroTarefaValido);
 
-		for(int i = nTarefas; i >= numeroTarefa; i--) {
-			tarefa[i] = tarefa[i - 1];
-			temPrazo[i] = temPrazo[i - 1];
-			foiFeita[i] = foiFeita[i - 1];
-			data[i][0] = data[i - 1][0];
-			data[i][1] = data[i - 1][1];
-			data[i][2] = data[i - 1][2];
-		}
+		nTarefas += 1;
+
+		avancarTarefas(tarefa, temPrazo, foiFeita, data, nTarefas, nTarefas, numeroTarefa);
 
 		tarefa[numeroTarefa] = leituraDadosString(scannerStrings, "\nIntroduza a descrição da tarefa: ");
 
@@ -607,7 +662,7 @@ public class main {
 		booleanValido = false;
 
 		do {
-			booleanoIntroduzido = leituraDadosString(scanner, "\nA tarefa está feita? (S / N)");
+			booleanoIntroduzido = leituraDadosString(scanner, "\nA tarefa tem prazo? (S / N)");
 
 			if(verificarString(booleanoIntroduzido, "s")) {
 				temPrazo[numeroTarefa] = true;
@@ -640,6 +695,8 @@ public class main {
 		}
 
 		System.out.println("\nA tarefa foi criada com sucesso.");
+
+		return nTarefas;
 	}
 
 	public static int apagarTarefaN(Scanner scanner, int dataIntroduzida[], String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int tamMax, int numeroTarefa, boolean numeroTarefaValido) {
@@ -660,14 +717,7 @@ public class main {
 		data[nTarefas][1] = 0;
 		data[nTarefas][2] = 0;
 
-		for(int i = numeroTarefa; i < nTarefas; i++) {
-			tarefa[i] = tarefa[i + 1];
-			temPrazo[i] = temPrazo[i + 1];
-			foiFeita[i] = foiFeita[i + 1];
-			data[i][0] = data[i + 1][0];
-			data[i][1] = data[i + 1][1];
-			data[i][2] = data[i + 1][2];
-		}
+		recuarTarefas(tarefa, temPrazo, foiFeita, data, nTarefas, numeroTarefa, nTarefas);
 
 		System.out.println("\nTarefa foi apagada com sucesso.");
 
@@ -702,7 +752,9 @@ public class main {
 
 		return nTarefas - tarefasApagadas;
 	}
-	//Criação do submenú Editar Tarefa
+
+	//Criação do submenú Editar Tarefa:
+
 	public static void menuEditarTarefa(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, int dataIntroduzida[], int tamMax, int numeroTarefa, boolean numeroTarefaValido) {
 		do {
 			do {
@@ -792,7 +844,143 @@ public class main {
 			System.out.println("\nFoi adicionada a data da tarefa com sucesso.");
 		}
 	}
-	//Método main reduzido (tudo dentro de métodos)
+
+	public static int menuCopiar(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, String tarefaMemoria[], boolean temPrazoMemoria[], boolean foiFeitaMemoria[], int dataMemoria[][], int nTarefasMemoria, int dataIntroduzida[], int tamMax) {
+		do {
+			do {
+				System.out.println("\n#-#-# Copiar / Colar #-#-#");
+				System.out.println("(C)opiar tarefas da posição m à n");
+				System.out.println("Co(r)tar tarefas da posição m à n");
+				System.out.println("(I)nserir da memória na posição n");
+				System.out.println("(V)oltar");
+
+				opcaoSubMenu = leituraDadosString(scannerStrings, "\nIntroduza a funcionalidade que pretende efetuar: ");
+
+				switch (opcaoSubMenu) {
+				case "c": case "C":
+					subMenuValido = true;
+					nTarefasMemoria = copiarTarefa(scanner, tarefa, temPrazo, foiFeita, data, nTarefas, tarefaMemoria, temPrazoMemoria, foiFeitaMemoria, dataMemoria, nTarefasMemoria);
+					break;
+
+				case "r": case "R":
+					subMenuValido = true;
+					nTarefasMemoria = cortarTarefa(scanner, tarefa, temPrazo, foiFeita, data, nTarefas, tarefaMemoria, temPrazoMemoria, foiFeitaMemoria, dataMemoria, nTarefasMemoria);
+					break;
+
+				case "i": case "I":
+					subMenuValido = true;
+					nTarefas = colarTarefa(scanner, tarefa, temPrazo, foiFeita, data, nTarefas, tarefaMemoria, temPrazoMemoria, foiFeitaMemoria, dataMemoria, nTarefasMemoria, tamMax);
+					break;
+
+				case "v": case "V":
+					subMenuValido = true;
+					sairSubMenu = true;
+					break;
+
+				default:
+					System.out.println("\nIntroduza um funcionalidade válida.");
+					subMenuValido = false;
+					break;
+				}
+			} while(!subMenuValido);
+		} while(!sairSubMenu);
+		return nTarefas;
+	}
+
+	public static int copiarTarefa(Scanner scanner, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, String tarefaMemoria[], boolean temPrazoMemoria[], boolean foiFeitaMemoria[], int dataMemoria[][], int nTarefasMemoria) {
+		int index1 = -1;
+		int index2 = -2;
+		int indexTemp = 0;
+
+		do {
+			index1 = leituraDadosInt(scanner, "Introduza o primeiro index a copiar: ") - 1;
+		} while(verificarIndex(index1, nTarefas));
+
+		do {
+			index2 = leituraDadosInt(scanner, "Introduza o segundo index a copiar: ") - 1;
+		} while(verificarIndex(index2, nTarefas));
+
+		if (index1 > index2) {
+			indexTemp = index1;
+			index1 = index2;
+			index2 = indexTemp;
+		}
+
+		for(int i = index1; i <= index2; i++) {
+			tarefaMemoria[i] = tarefa[i];
+			temPrazoMemoria[i] = temPrazo[i];
+			foiFeitaMemoria[i] = foiFeita[i];
+			dataMemoria[i][0] = data[i][0];
+			dataMemoria[i][1] = data[i][1];
+			dataMemoria[i][2] = data[i][2];
+			nTarefasMemoria += 1;
+		}
+
+		return nTarefasMemoria;
+	}
+
+	public static int cortarTarefa(Scanner scanner, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, String tarefaMemoria[], boolean temPrazoMemoria[], boolean foiFeitaMemoria[], int dataMemoria[][], int nTarefasMemoria) {
+		int index1 = -1;
+		int index2 = -2;
+		int indexTemp = 0;
+
+		do {
+			index1 = leituraDadosInt(scanner, "Introduza o primeiro index a copiar: ") - 1;
+		} while(verificarIndex(index1, nTarefas));
+
+		do {
+			index1 = leituraDadosInt(scanner, "Introduza o segundo index a copiar: ") - 1;
+		} while(verificarIndex(index2, nTarefas));
+
+		if (index1 > index2) {
+			indexTemp = index1;
+			index1 = index2;
+			index2 = indexTemp;
+		}
+
+		for(int i = index1; i <= index2; i++) {
+			tarefaMemoria[i] = tarefa[i];
+			temPrazoMemoria[i] = temPrazo[i];
+			foiFeitaMemoria[i] = foiFeita[i];
+			dataMemoria[i][0] = data[i][0];
+			dataMemoria[i][1] = data[i][1];
+			dataMemoria[i][2] = data[i][2];
+			nTarefasMemoria += 1;
+		}
+
+		nTarefas = recuarTarefas(tarefa, temPrazo, foiFeita, data, nTarefas, index1, index2);
+
+		return nTarefasMemoria;
+	}
+
+	public static int colarTarefa(Scanner scanner, String tarefa[], boolean temPrazo[], boolean foiFeita[], int data[][], int nTarefas, String tarefaMemoria[], boolean temPrazoMemoria[], boolean foiFeitaMemoria[], int dataMemoria[][], int nTarefasMemoria, int tamMax) {
+		int index = -1;
+
+		do {
+			index = leituraDadosInt(scanner, "Introduza o index a colar: ") - 1;
+		} while(verificarIndex(index, nTarefas));
+
+		if(nTarefas - 1 >= tamMax) {
+			System.out.printf("\nJá existe o número máximo de tarefas, o máximo é %d.", tamMax);
+			return nTarefas;
+		}
+
+		avancarTarefas(tarefa, temPrazo, foiFeita, data, nTarefas, (nTarefas + nTarefasMemoria), index);
+
+		for(int i = index; i < (index + nTarefasMemoria); i++) {
+			tarefa[i] = tarefaMemoria[i];
+			temPrazo[i] = temPrazoMemoria[i];
+			foiFeita[i] = foiFeitaMemoria[i];
+			data[i][0] = dataMemoria[i][0];
+			data[i][1] = dataMemoria[i][1];
+			data[i][2] = dataMemoria[i][2];
+		}
+
+		return nTarefas + nTarefasMemoria;
+	}
+
+	//Método main reduzido (tudo dentro de métodos):
+
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
 		Scanner scannerStrings = new Scanner(System.in);
@@ -804,6 +992,13 @@ public class main {
 		boolean temPrazo[][] = new boolean[listaMax][tamMax];
 		boolean foiFeita[][] = new boolean[listaMax][tamMax];
 		int data[][][] = new int[listaMax][tamMax][3];
+
+		String[] tarefaMemoria = new String[tamMax];
+		boolean temPrazoMemoria[] = new boolean[tamMax];
+		boolean foiFeitaMemoria[] = new boolean[tamMax];
+		int dataMemoria[][] = new int[tamMax][3];
+
+		int nTarefasMemoria = 0;
 
 		int nTarefas[] = new int[listaMax];
 		String nomeListas[] = new String[listaMax];
@@ -828,7 +1023,6 @@ public class main {
 		boolean sairMenuPrincipal = false;
 		boolean subMenuValido = false;
 		boolean sairSubMenu = false;
-		boolean editarSubMenuValido = false;
 
 		String booleanoIntroduzido = "";
 
@@ -859,14 +1053,13 @@ public class main {
 				switch (opcaoMenuPrincipal) {
 				case "g": case "G":
 					menuPrincipalValido = true;
-					listaAtiva = 	menuGerir(scanner, scannerStrings, opcaoSubMenu, editarSubMenuValido, sairSubMenu, listaAtiva, nListas, nomeListas);
-
+					listaAtiva = menuGerir(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, listaAtiva, nListas, listaMax, nomeListas);
 					break;
 
 				case "v": case "V":
 					if(verificarListaAtiva(listaAtiva)) {
 						menuPrincipalValido = true;
-						menuVisualizar(scanner, scannerStrings, opcaoSubMenu, editarSubMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, foiEncontrado);
+						menuVisualizar(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, foiEncontrado);
 					} else {
 						System.out.println("Não tem nenhuma lista ativa.");
 					}
@@ -875,7 +1068,7 @@ public class main {
 				case "m": case "M":
 					if(verificarListaAtiva(listaAtiva)) {
 						menuPrincipalValido = true;
-						menuMarcacao(scanner, scannerStrings, opcaoSubMenu, editarSubMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, ultimoEditado, numeroTarefa, numeroTarefaValido, foiEncontrado);
+						menuMarcacao(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, ultimoEditado, numeroTarefa, numeroTarefaValido, foiEncontrado);
 					} else {
 						System.out.println("Não tem nenhuma lista ativa.");
 					}
@@ -883,14 +1076,20 @@ public class main {
 
 				case "e": case "E":
 					if(verificarListaAtiva(listaAtiva)) {
-						menuPrincipalValido = true;menuEditar(scanner, scannerStrings, opcaoSubMenu, editarSubMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, tamMax, booleanoIntroduzido, booleanValido, numeroTarefa, numeroTarefaValido);
+						menuPrincipalValido = true;
+						nTarefas[listaAtiva] = menuEditar(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, tamMax, booleanoIntroduzido, booleanValido, numeroTarefa, numeroTarefaValido);
 					} else {
 						System.out.println("Não tem nenhuma lista ativa.");
 					}
 					break;
 
 				case "c": case "C":
-					menuPrincipalValido = true;
+					if(verificarListaAtiva(listaAtiva)) {
+						menuPrincipalValido = true;
+						nTarefas[listaAtiva] = menuCopiar(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], tarefaMemoria, temPrazoMemoria, foiFeitaMemoria, dataMemoria, nTarefasMemoria, dataIntroduzida, tamMax);
+					} else {
+						System.out.println("Não tem nenhuma lista ativa.");
+					}
 					break;
 
 				case "s": case "S":
@@ -906,5 +1105,4 @@ public class main {
 			} while(!menuPrincipalValido);
 		} while(!sairMenuPrincipal);
 	}
-
 }
