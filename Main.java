@@ -88,7 +88,7 @@ public class Main {
 		}
 	}
 	
-	public static int menuGerir(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, int listaAtiva, int nListas, String nomeListas[]) {
+	public static int menuGerir(Scanner scanner, Scanner scannerStrings, String opcaoSubMenu, boolean subMenuValido, boolean sairSubMenu, int listaAtiva, int nListas, int listaMax, String nomeListas[]) {
 		do {
 			do {
 				System.out.println("\n#-#-# Gerir listas #-#-#");
@@ -113,10 +113,12 @@ public class Main {
 					
 					case "c": case "C":
 						subMenuValido = true;
+						criarLista(scannerStrings, nListas, listaMax, nomeListas);
 					break;
 					
 					case "a": case "A":
 						subMenuValido = true;
+						apagarLista(scanner, nListas, listaMax, nomeListas);
 					break;
 					
 					case "v": case "V":
@@ -137,22 +139,43 @@ public class Main {
 	public static int listaAtiva(Scanner scanner, int listaAtiva, int nListas) {
 		listaAtiva = leituraDadosInt(scanner, "\nIntroduza o número da lista ativa: ");
 		
-		if (listaAtiva >= nListas) {
+		if (listaAtiva > nListas) {
 			System.out.println("Está lista não é valída.");
 			listaAtiva = 0;
 		}
 
-		return listaAtiva;
+		return listaAtiva - 1;
 	}
 	
 	public static void listarListas(int nListas, String nomeListas[]) {
 		for(int i = 0; i < nListas; i++) {
-			System.out.printf("%d | %s", i, nomeListas[i]);
+			System.out.printf("%d | %s", i + 1, nomeListas[i]);
 		}
 	}
 	
-	public static int criarLista(Scanner scannerStrings, int nListas, String nomeListas[]) {
-		nomeListas[nListas - 1] = leituraDadosString(scannerStrings, "");
+	public static int criarLista(Scanner scannerStrings, int nListas, int listaMax, String nomeListas[]) {
+		if (nListas < listaMax) {
+			nomeListas[nListas - 1] = leituraDadosString(scannerStrings, "");
+			
+			nListas += 1;
+		} else {
+			System.out.println("Não pode criar mais listas.");
+		}
+		
+		return nListas;
+	}
+	
+	public static int apagarLista(Scanner scanner, int nListas, int listaMax, String nomeListas[]) {
+		if (nListas != 0) {
+			int nLista = leituraDadosInt(scanner, "Introduza o número da lista: ");
+			if (nLista <= nListas) {
+				nomeListas[nLista - 1] = null;
+				
+				nListas -= 1;
+			}
+		} else {
+			System.out.println("Não pode apagar a última lista.");
+		}
 		
 		return nListas;
 	}
@@ -820,7 +843,6 @@ public class Main {
 		boolean sairMenuPrincipal = false;
 		boolean subMenuValido = false;
 		boolean sairSubMenu = false;
-		boolean editarSubMenuValido = false;
 		
 		String booleanoIntroduzido = "";
 		
@@ -851,12 +873,13 @@ public class Main {
 				switch (opcaoMenuPrincipal) {
 					case "g": case "G":
 						menuPrincipalValido = true;
+						listaAtiva = menuGerir(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, listaAtiva, nListas, numeroTarefa, nomeListas);
 					break;
 					
 					case "v": case "V":
 						if(verificarListaAtiva(listaAtiva)) {
 							menuPrincipalValido = true;
-							menuVisualizar(scanner, scannerStrings, opcaoSubMenu, editarSubMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, foiEncontrado);
+							menuVisualizar(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, foiEncontrado);
 						} else {
 							System.out.println("Não tem nenhuma lista ativa.");
 						}
@@ -865,7 +888,7 @@ public class Main {
 					case "m": case "M":
 						if(verificarListaAtiva(listaAtiva)) {
 							menuPrincipalValido = true;
-							menuMarcacao(scanner, scannerStrings, opcaoSubMenu, editarSubMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, ultimoEditado, numeroTarefa, numeroTarefaValido, foiEncontrado);
+							menuMarcacao(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, ultimoEditado, numeroTarefa, numeroTarefaValido, foiEncontrado);
 						} else {
 							System.out.println("Não tem nenhuma lista ativa.");
 						}
@@ -873,7 +896,7 @@ public class Main {
 					
 					case "e": case "E":
 						if(verificarListaAtiva(listaAtiva)) {
-							menuPrincipalValido = true;menuEditar(scanner, scannerStrings, opcaoSubMenu, editarSubMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, tamMax, booleanoIntroduzido, booleanValido, numeroTarefa, numeroTarefaValido);
+							menuPrincipalValido = true;menuEditar(scanner, scannerStrings, opcaoSubMenu, subMenuValido, sairSubMenu, tarefa[listaAtiva], temPrazo[listaAtiva], foiFeita[listaAtiva], data[listaAtiva], nTarefas[listaAtiva], dataIntroduzida, tamMax, booleanoIntroduzido, booleanValido, numeroTarefa, numeroTarefaValido);
 						} else {
 							System.out.println("Não tem nenhuma lista ativa.");
 						}
